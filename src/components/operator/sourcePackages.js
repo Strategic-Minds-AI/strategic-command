@@ -1,0 +1,6 @@
+export const sourcePackages = [
+  { id: 'browser', name: 'Cloud Browser', filename: 'cloud-browser14.zip', files: 568, size: '1.15 MB', url: 'https://media.base44.com/files/public/user_69b98b0a75d69ef410a89852/cec09df1c_cloud-browser14.zip', description: 'Playwright browser engine, session management, and browser automation.', entry: 'browser-engine/README.md', runtime: 'Separate Node.js + Chromium service', icon: 'browser' },
+  { id: 'hub', name: 'X1 AI Hub', filename: 'x1-ai-hub.zip', files: 246, size: '365 KB', url: 'https://media.base44.com/files/public/user_69b98b0a75d69ef410a89852/0b3a4dcbc_x1-ai-hub.zip', description: 'Agent orchestration, work packets, and recurring autonomous jobs.', entry: 'base44/functions/autonomousOrchestrator/entry.ts', runtime: 'Base44 functions + configured AI providers', icon: 'hub' },
+];
+export const cadenceLabels = { '*/15 * * * *': 'Every 15 minutes', '0 * * * *': 'Every hour', '0 9 * * *': 'Daily at 09:00 UTC' };
+export const targetLabels = { computer: 'My computer', cloud_browser: 'Cloud browser' };

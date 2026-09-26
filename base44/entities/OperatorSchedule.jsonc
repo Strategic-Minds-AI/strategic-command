@@ -1,0 +1,65 @@
+{
+  "name": "OperatorSchedule",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "instructions": {
+      "type": "string",
+      "maxLength": 5000
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "computer",
+        "cloud_browser"
+      ]
+    },
+    "cron": {
+      "type": "string",
+      "enum": [
+        "*/15 * * * *",
+        "0 * * * *",
+        "0 9 * * *"
+      ]
+    },
+    "enabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "last_enqueued_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "title",
+    "instructions",
+    "target",
+    "cron"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

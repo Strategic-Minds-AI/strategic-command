@@ -1,0 +1,72 @@
+{
+  "name": "OperatorTask",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "instructions": {
+      "type": "string",
+      "maxLength": 5000
+    },
+    "target": {
+      "type": "string",
+      "enum": [
+        "computer",
+        "cloud_browser"
+      ],
+      "default": "cloud_browser"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "cancelled"
+      ],
+      "default": "queued"
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "schedule"
+      ],
+      "default": "manual"
+    },
+    "schedule_id": {
+      "type": "string"
+    },
+    "schedule_slot": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "instructions",
+    "target",
+    "status"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

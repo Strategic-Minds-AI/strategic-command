@@ -1,0 +1,10 @@
+import React from 'react';
+import { Monitor, MousePointer2, ShieldCheck, ArrowRight, LockKeyhole } from 'lucide-react';
+import BrandButton from '@/components/operator/BrandButton';
+export default function ComputerPreview({ onSetup }) {
+  return <section className="operator-panel"><header className="p-5 flex items-center justify-between gap-3 border-b"><div className="flex items-center gap-2.5 text-sm font-semibold"><Monitor className="w-4 h-4"/>Computer workspace</div><span className="neutral-pill"><span className="w-1.5 h-1.5 rounded-full bg-gray-400"/>Not connected</span></header>
+    <div className="operator-grid px-6 py-10 sm:py-12 text-center relative overflow-hidden"><div className="relative w-52 sm:w-64 mx-auto mb-8"><div className="rounded-xl border border-gray-300 bg-white p-2 shadow-sm"><div className="bg-muted rounded-lg h-28 sm:h-36 border flex items-center justify-center relative"><div className="absolute top-2 left-3 flex gap-1"><i className="rounded-full w-1 h-1 bg-gray-300"/><i className="rounded-full w-1 h-1 bg-gray-300"/><i className="rounded-full w-1 h-1 bg-gray-300"/></div><div className="w-12 h-12 rounded-xl border bg-white flex items-center justify-center"><MousePointer2 className="w-6 h-6"/></div><span className="absolute bottom-3 right-3 text-[9px] text-muted-foreground font-mono">AWAITING CONNECTION</span></div></div><div className="h-6 w-10 border-x bg-white mx-auto"/><div className="h-1.5 w-20 rounded-full bg-gray-200 mx-auto"/><div className="absolute -right-6 top-9 bg-white border shadow-sm p-2.5 rounded-xl"><LockKeyhole className="w-4 h-4 text-muted-foreground"/></div></div>
+      <h2 className="font-bold text-lg">Your computer. Your control.</h2><p className="text-sm text-muted-foreground max-w-xs mx-auto mt-2 mb-6">Connect a local companion to let approved agents work on your machine.</p><BrandButton onClick={onSetup}>View connection requirements<ArrowRight/></BrandButton>
+    </div><footer className="border-t px-5 py-3.5 flex items-center justify-center gap-2 text-xs text-muted-foreground"><ShieldCheck className="w-4 h-4"/>No device access has been granted</footer>
+  </section>;
+}
