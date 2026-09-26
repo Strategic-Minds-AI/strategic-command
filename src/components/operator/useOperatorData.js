@@ -6,8 +6,10 @@ export default function useOperatorData() {
   const admin = user.data?.role === 'admin';
   const tasks = useQuery({queryKey:['operator-tasks'],queryFn:() => base44.entities.OperatorTask.list('-created_date',200), enabled:admin, refetchInterval:30000});
   const schedules = useQuery({queryKey:['operator-schedules'],queryFn:() => base44.entities.OperatorSchedule.list('-created_date',50), enabled:admin, refetchInterval:30000});
-  const refresh = () => Promise.all([client.invalidateQueries({queryKey:['operator-tasks']}),client.invalidateQueries({queryKey:['operator-schedules']})]);
+  const devices = useQuery({queryKey:['operator-devices'],queryFn:async() => (await base44.functions.invoke('operatorDevices',{operation:'list'})).data.devices, enabled:admin, refetchInterval:8000});
+  const commands = useQuery({queryKey:['operator-commands'],queryFn:() => base44.entities.ComputerCommand.list('-created_date',100), enabled:admin, refetchInterval:5000});
+  const refresh = () => Promise.all(['operator-tasks','operator-schedules','operator-devices','operator-commands'].map(key=>client.invalidateQueries({queryKey:[key]})));
   const updateTask = useMutation({mutationFn:({id,status}) => base44.entities.OperatorTask.update(id,{status}),onSuccess:refresh});
   const updateSchedule = useMutation({mutationFn:({id,enabled}) => base44.entities.OperatorSchedule.update(id,{enabled}),onSuccess:refresh});
-  return {user:user.data, tasks:tasks.data||[], schedules:schedules.data||[], loading:user.isPending||(admin&&(tasks.isPending||schedules.isPending)), error:user.error||tasks.error||schedules.error||updateTask.error||updateSchedule.error, refresh, updateTask, updateSchedule};
+  return {user:user.data, tasks:tasks.data||[], schedules:schedules.data||[], devices:devices.data||[], commands:commands.data||[], loading:user.isPending||(admin&&(tasks.isPending||schedules.isPending)), error:user.error||tasks.error||schedules.error||devices.error||commands.error||updateTask.error||updateSchedule.error, refresh, updateTask, updateSchedule};
 }

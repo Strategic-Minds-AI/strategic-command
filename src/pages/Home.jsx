@@ -26,7 +26,7 @@ export default function Home() {
     {view==='overview'&&<Overview data={data} onNavigate={navigate} onCreate={()=>setForm('task')} onSources={sources}/>}
     {view==='tasks'&&<TaskList tasks={data.tasks} onCreate={()=>setForm('task')} onUpdate={data.updateTask.mutate} busy={data.updateTask.isPending}/>}
     {view==='schedules'&&<ScheduleList schedules={data.schedules} onCreate={()=>setForm('schedule')} onUpdate={data.updateSchedule.mutate} busy={data.updateSchedule.isPending}/>}
-    {view==='systems'&&<SystemsPanel onSources={sources}/>}
+    {view==='systems'&&<SystemsPanel onSources={sources} data={data}/>}
     {view==='sources'&&<SourceExplorer key={params.get('package')||'all'} initialPackage={params.get('package')}/>}
     {view==='mcp'&&<McpPanel/>}
     <TaskForm key={form||'closed'} open={!!form} schedule={form==='schedule'} onClose={()=>setForm(null)} onSaved={data.refresh}/>

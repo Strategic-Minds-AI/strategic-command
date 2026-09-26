@@ -22,9 +22,16 @@
       "type": "string",
       "enum": [
         "queued",
+        "running",
+        "completed",
+        "failed",
         "cancelled"
       ],
       "default": "queued"
+    },
+    "result": {
+      "type": "string",
+      "maxLength": 5000
     },
     "source": {
       "type": "string",
