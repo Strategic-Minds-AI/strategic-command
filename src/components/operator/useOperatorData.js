@@ -1,9 +1,16 @@
+import { useEffect } from 'react';
 import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 export default function useOperatorData() {
   const client = useQueryClient();
   const user = useQuery({queryKey:['operator-user'],queryFn:() => base44.auth.me()});
   const admin = user.data?.role === 'admin';
+  useEffect(() => {
+    if (!admin) return;
+    const unsubscribeTasks=base44.entities.OperatorTask.subscribe(()=>client.invalidateQueries({queryKey:['operator-tasks']}));
+    const unsubscribeCommands=base44.entities.ComputerCommand.subscribe(()=>client.invalidateQueries({queryKey:['operator-commands']}));
+    return () => { unsubscribeTasks(); unsubscribeCommands(); };
+  }, [admin, client]);
   const tasks = useQuery({queryKey:['operator-tasks'],queryFn:() => base44.entities.OperatorTask.list('-created_date',200), enabled:admin, refetchInterval:30000});
   const schedules = useQuery({queryKey:['operator-schedules'],queryFn:() => base44.entities.OperatorSchedule.list('-created_date',50), enabled:admin, refetchInterval:30000});
   const accounts = useQuery({queryKey:['operator-accounts'],queryFn:() => base44.entities.GoogleAccount.list('-created_date',200), enabled:admin, refetchInterval:30000});
