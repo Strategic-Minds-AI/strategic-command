@@ -17,7 +17,12 @@
         "browser_health",
         "browser_start",
         "browser_action",
-        "browser_close"
+        "browser_close",
+        "phone_status",
+        "phone_tap",
+        "phone_swipe",
+        "phone_text",
+        "phone_key"
       ]
     },
     "arguments": {

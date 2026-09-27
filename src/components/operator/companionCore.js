@@ -1,6 +1,6 @@
 export const companionCore = String.raw`#!/usr/bin/env python3
 """Strategic operator. Explicit desktop permission; no shell execution tool."""
-import argparse, base64, datetime, getpass, io, json, os, pathlib, platform, re, sqlite3, sys, time, urllib.request, urllib.error, urllib.parse, webbrowser
+import argparse, base64, datetime, getpass, io, json, os, pathlib, platform, re, sqlite3, subprocess, sys, time, urllib.request, urllib.error, urllib.parse, webbrowser
 ROOT = pathlib.Path(__file__).resolve().parent
 ALLOW_INPUT = False
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -53,9 +53,42 @@ def browser(action, args):
         if kind in ('click','fill'): data['selector']=text(args.get('selector'),500)
         if kind in ('goto','fill','press','scroll'): data['value']=safe_url(args.get('value')) if kind=='goto' else text(args.get('value'))
     return http(url+'/sessions/'+sid+'/execute',data,headers)
+def android(action, args):
+    def adb(*parts):
+        try:
+            result=subprocess.run(['adb',*map(str,parts)],capture_output=True,text=True,timeout=12)
+        except FileNotFoundError: raise RuntimeError('Install Android Platform Tools (adb) on the paired computer first.') from None
+        if result.returncode: raise RuntimeError('Android connection failed: '+result.stderr.strip()[:300])
+        return result.stdout.strip()
+    rows=adb('devices').splitlines()
+    connected=[row.split()[0] for row in rows[1:] if row.strip().endswith('\tdevice')]
+    if len(connected)!=1: raise RuntimeError('Connect exactly one authorized Android phone by USB. Enable USB debugging and approve this computer on the phone.')
+    serial=connected[0]
+    def phone(*parts): return adb('-s',serial,'shell',*parts)
+    if action=='phone_status':
+        model=phone('getprop','ro.product.model')[:80]
+        version=phone('getprop','ro.build.version.release')[:40]
+        size=phone('wm','size')[:100]
+        battery=phone('dumpsys','battery')
+        level=re.search(r'^  level: (\d+)$',battery,re.M)
+        return {'model':model,'android':version,'screen':size,'battery_percent':int(level.group(1)) if level else None}
+    if not ALLOW_INPUT: raise PermissionError('Phone control is disabled. Restart the companion with --allow-input after approving phone control.')
+    if action=='phone_tap': phone('input','tap',number(args.get('x'),0,20000),number(args.get('y'),0,20000))
+    elif action=='phone_swipe': phone('input','swipe',*[number(args.get(key),0,20000) for key in ('x1','y1','x2','y2')],number(args.get('duration'),100,2000))
+    elif action=='phone_text':
+        value=text(args.get('text'),120)
+        if not re.fullmatch(r'[A-Za-z0-9 ]+',value): raise ValueError('Phone text supports letters, numbers, and spaces only.')
+        phone('input','text',value.replace(' ','%s'))
+    elif action=='phone_key':
+        key={'home':'KEYCODE_HOME','back':'KEYCODE_BACK','app_switch':'KEYCODE_APP_SWITCH'}.get(args.get('key'))
+        if not key: raise ValueError('Unsupported phone key.')
+        phone('input','keyevent',key)
+    else: raise ValueError('Unsupported phone action.')
+    return {'ok':True,'action':action}
 def execute(action, args):
     if not isinstance(args,dict): raise ValueError('Arguments must be an object.')
     if action.startswith('browser_'): return browser(action,args)
+    if action.startswith('phone_'): return android(action,args)
     p=gui()
     if action=='screen_info':
         size=p.size(); position=p.position()
