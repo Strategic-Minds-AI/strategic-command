@@ -1,0 +1,12 @@
+import React from 'react';
+import { LayoutDashboard, ListTodo, Clock3, Monitor, FolderArchive, Network, Phone, ScanSearch, Activity, Users, LogOut, X } from 'lucide-react';
+import OperatorMark from '@/components/operator/OperatorMark';
+import { base44 } from '@/api/base44Client';
+export const navigation=[['overview','Overview',LayoutDashboard],['tasks','Task queue',ListTodo],['schedules','Schedules',Clock3],['systems','Connected systems',Monitor],['sources','Source packages',FolderArchive],['mcp','MCP access',Network],['whatsapp','WhatsApp',Phone],['audit','Health audit',ScanSearch],['activity','Agent activity',Activity],['accounts','Google accounts',Users]];
+export default function OperatorNavigation({ view, onNavigate, user, onClose }) {
+  return <aside id="operator-navigation" className="flex h-full flex-col bg-sidebar border-r border-border" aria-label="Tool menu">
+    <div className="flex items-center gap-3 px-5 py-6"><span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"><OperatorMark className="h-7 w-7"/></span><div className="min-w-0"><strong className="block text-base font-bold truncate">XTREME</strong><span className="text-[11px] text-muted-foreground">AGENT COMMAND</span></div><button className="ml-auto rounded-lg p-2 md:hidden" aria-label="Close tool menu" onClick={onClose}><X className="h-5 w-5"/></button></div>
+    <div className="px-4 pb-3 text-[11px] font-semibold uppercase text-muted-foreground">Tools</div><nav aria-label="Main navigation" className="flex-1 overflow-y-auto px-3 pb-4 space-y-1">{navigation.map(([key,label,Icon])=><button key={key} className="operator-nav w-full text-left" aria-current={view===key?'page':undefined} onClick={()=>{onNavigate(key);onClose();}}><Icon className="h-4 w-4 shrink-0"/>{label}</button>)}</nav>
+    <div className="border-t border-border p-4 flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-xs">{(user?.full_name||'A').slice(0,1)}</span><div className="min-w-0 flex-1"><p className="truncate text-sm font-semibold">{user?.full_name||'Administrator'}</p><p className="text-xs text-muted-foreground">Workspace admin</p></div><button className="rounded-lg p-2" aria-label="Sign out" onClick={()=>base44.auth.logout('/login')}><LogOut className="h-4 w-4"/></button></div>
+  </aside>;
+}
