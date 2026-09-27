@@ -1,0 +1,13 @@
+import React from 'react';
+import { Monitor, ScanSearch, ListTodo, MessageCircle } from 'lucide-react';
+export default function ActivityStatus({ data, audits }) {
+  const latest = audits[0];
+  const activeTasks = data.tasks.filter(task => task.status === 'running');
+  const activeCommands = data.commands.filter(command => ['queued', 'running'].includes(command.status) && Date.parse(command.expires_at) > Date.now());
+  return <section className="grid gap-4 sm:grid-cols-2" aria-label="Operator activity">
+    <article className="operator-panel p-5"><div className="flex items-center gap-3"><ScanSearch className="w-5 h-5"/><h2 className="font-bold">Health audit</h2></div><p className="text-sm mt-3">{latest ? `Last recorded ${new Date(latest.created_date).toLocaleString()} · ${latest.status === 'healthy' ? 'Healthy' : 'Needs attention'}` : 'No audit recorded yet.'}</p><p className="text-xs text-muted-foreground mt-2">Checks saved activity; no live device or cloud inspection.</p></article>
+    <article className="operator-panel p-5"><div className="flex items-center gap-3"><MessageCircle className="w-5 h-5"/><h2 className="font-bold">Operator assistant</h2></div><p className="text-sm mt-3">Configured for chat. Live reasoning activity is not available in this view.</p><p className="text-xs text-muted-foreground mt-2">No specialist agents or autonomous swarm are configured.</p></article>
+    <article className="operator-panel p-5"><div className="flex items-center gap-3"><ListTodo className="w-5 h-5"/><h2 className="font-bold">Reported work</h2></div><p className="text-sm mt-3">{activeTasks.length} task{activeTasks.length === 1 ? '' : 's'} marked running</p>{activeTasks.length ? <ul className="mt-2 space-y-1 text-xs text-muted-foreground">{activeTasks.slice(0,5).map(task => <li key={task.id} className="truncate">{task.title}</li>)}</ul> : <p className="text-xs text-muted-foreground mt-2">No task is marked running.</p>}</article>
+    <article className="operator-panel p-5"><div className="flex items-center gap-3"><Monitor className="w-5 h-5"/><h2 className="font-bold">Computer actions</h2></div><p className="text-sm mt-3">{activeCommands.length} queued or running · {data.devices.filter(device => device.online && device.enabled && !device.revoked).length} online device(s)</p><p className="text-xs text-muted-foreground mt-2">A queued action is not a completed action; check its receipt.</p></article>
+  </section>;
+}

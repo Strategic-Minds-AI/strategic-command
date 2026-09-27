@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Plus, ArrowRight, Loader2, Info, ShieldCheck } from 'lucide-react';
 import OperatorShell from '@/components/operator/OperatorShell';
 import BrandButton from '@/components/operator/BrandButton';
@@ -15,9 +15,9 @@ import TaskForm from '@/components/operator/TaskForm';
 import useOperatorData from '@/components/operator/useOperatorData';
 const pages={overview:['Mission control','Your agents, tools, and tasks. One place to take control.'],tasks:['Task queue','Define the goal. Keep every instruction in view.'],schedules:['Run on your schedule','Turn repeatable work into a consistent routine.'],systems:['Connected systems','Know what’s connected. Know what’s in your control.'],sources:['Your source. Unpacked.','Explore the two systems powering your next build.'],mcp:['Agent access, on your terms.','Connect compatible AI clients through Model Context Protocol.'],whatsapp:['WhatsApp operator','Manage tasks and request approved computer actions through chat.'],audit:['Operator audit','Scheduled health checks, safe recovery, and findings to review.']};
 export default function Home() {
-  const [params,setParams]=useSearchParams(), [form,setForm]=useState(null), data=useOperatorData();
+  const [params,setParams]=useSearchParams(), route=useNavigate(), [form,setForm]=useState(null), data=useOperatorData();
   const view=pages[params.get('view')]?params.get('view'):'overview';
-  const navigate=(next)=>setParams(next==='overview'?{}:{view:next});
+  const navigate=(next)=>next==='activity'?route('/activity'):setParams(next==='overview'?{}:{view:next});
   const sources=(id)=>setParams({view:'sources',package:id});
   if(data.loading)return <div className="min-h-screen flex items-center justify-center gap-3 text-sm"><Loader2 className="h-5 w-5 animate-spin"/>Loading your workspace…</div>;
   if(!data.user||data.user.role!=='admin')return <div className="max-w-lg mx-auto p-8 mt-20 text-center"><ShieldCheck className="h-10 w-10 mx-auto mb-6"/><h1 className="text-2xl font-bold">Administrator access required</h1><p className="text-muted-foreground mt-4">{data.error?.message||'Computer operations are restricted to workspace administrators.'}</p></div>;

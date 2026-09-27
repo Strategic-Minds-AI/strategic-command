@@ -1,0 +1,9 @@
+import React from 'react';
+import { ShieldCheck } from 'lucide-react';
+export default function HealingLog({ audits }) {
+  const recoveries = audits.filter(audit => audit.healed_count > 0);
+  return <section className="operator-panel" aria-labelledby="healing-log-title"><header className="p-5 border-b"><div className="flex items-center gap-2"><ShieldCheck className="w-5 h-5"/><h2 id="healing-log-title" className="font-bold">Automatic recovery log</h2></div><p className="text-xs text-muted-foreground mt-2">Recorded audit runs that closed expired, unstarted computer commands. This is not proof that a system issue was repaired.</p></header>
+    {!recoveries.length ? <p className="p-6 text-sm text-muted-foreground">No automatic recoveries in the recent audit history.</p> : <ol className="divide-y">{recoveries.map(audit => <li key={audit.id} className="p-5"><div className="flex flex-wrap justify-between gap-2"><strong className="text-sm">{audit.healed_count} expired queued command{audit.healed_count === 1 ? '' : 's'} closed</strong><span className="neutral-pill">{audit.source === 'scheduled' ? 'Scheduled audit' : 'Manual audit'}</span></div><time className="block mt-2 text-xs text-muted-foreground" dateTime={audit.created_date}>{new Date(audit.created_date).toLocaleString()}</time><p className="text-sm mt-3">{audit.findings?.find(f => f.code === 'expired_queue')?.message || 'The audit closed unstarted commands that had expired.'}</p><p className="text-xs text-muted-foreground mt-2">No desktop action was dispatched by this recovery.</p></li>)}</ol>}
+    <p className="p-4 border-t text-xs text-muted-foreground">Showing recoveries from the latest {audits.length} audit runs (up to 30).</p>
+  </section>;
+}
