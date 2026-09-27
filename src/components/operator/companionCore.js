@@ -1,5 +1,5 @@
 export const companionCore = String.raw`#!/usr/bin/env python3
-"""Xtreme AI Operator. Explicit desktop permission; no shell execution tool."""
+"""Strategic operator. Explicit desktop permission; no shell execution tool."""
 import argparse, base64, datetime, getpass, io, json, os, pathlib, platform, re, sqlite3, sys, time, urllib.request, urllib.error, urllib.parse, webbrowser
 ROOT = pathlib.Path(__file__).resolve().parent
 ALLOW_INPUT = False
