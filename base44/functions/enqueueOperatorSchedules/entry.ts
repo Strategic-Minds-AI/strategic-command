@@ -13,7 +13,7 @@ export default async function(req) {
       if (!due) continue;
       const exists = await base44.entities.OperatorTask.filter({schedule_id:item.id, schedule_slot:slot}, '-created_date', 1);
       if (exists.length) continue;
-      await base44.entities.OperatorTask.create({title:item.title, instructions:item.instructions, target:item.target, status:'queued', source:'schedule', schedule_id:item.id, schedule_slot:slot});
+      await base44.entities.OperatorTask.create({title:item.title, instructions:item.instructions, target:item.target, status:'queued', source:'schedule', schedule_id:item.id, schedule_slot:slot, ...(item.account_id ? {account_id:item.account_id} : {})});
       await base44.entities.OperatorSchedule.update(item.id, {last_enqueued_at:now.toISOString()});
       enqueued++;
     }

@@ -32,6 +32,9 @@
     "last_enqueued_at": {
       "type": "string",
       "format": "date-time"
+    },
+    "account_id": {
+      "type": "string"
     }
   },
   "required": [

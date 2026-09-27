@@ -46,6 +46,9 @@
     },
     "schedule_slot": {
       "type": "string"
+    },
+    "account_id": {
+      "type": "string"
     }
   },
   "required": [

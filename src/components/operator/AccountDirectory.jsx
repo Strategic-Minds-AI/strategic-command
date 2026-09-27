@@ -1,0 +1,20 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import BrandButton from '@/components/operator/BrandButton';
+const blank = { email:'', label:'', organization:'' };
+export default function AccountDirectory({ accounts, refresh }) {
+  const [editing,setEditing] = useState(null), [form,setForm] = useState(blank), [busy,setBusy] = useState(false), [error,setError] = useState('');
+  const start = account => { setEditing(account?.id || 'new'); setForm(account ? {email:account.email,label:account.label,organization:account.organization||''} : blank); setError(''); };
+  async function save(e) { e.preventDefault(); setBusy(true); setError(''); try {
+    const value = {email:form.email.trim().toLowerCase(),label:form.label.trim(),organization:form.organization.trim()};
+    if (accounts.some(account => account.email.toLowerCase() === value.email && account.id !== editing)) throw new Error('This email is already listed.');
+    if (editing === 'new') await base44.entities.GoogleAccount.create({...value,active:true}); else await base44.entities.GoogleAccount.update(editing,value);
+    await refresh(); setEditing(null); setForm(blank);
+  } catch (err) { setError(err.message || 'Could not save account.'); } finally { setBusy(false); } }
+  async function toggle(account) { setBusy(true); setError(''); try { await base44.entities.GoogleAccount.update(account.id,{active:!account.active}); await refresh(); } catch(err) {setError(err.message || 'Could not update account.');} finally {setBusy(false);} }
+  return <div className="space-y-5"><section className="operator-panel p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><h2 className="font-bold">Google account directory</h2><p className="text-sm text-muted-foreground mt-2">Organize accounts from different businesses here. Entries are labels for tasks and schedules, not Google sign-ins; no Google data is accessed.</p></div><BrandButton onClick={()=>start(null)}>Add account</BrandButton></div></section>
+    {editing && <form onSubmit={save} className="operator-panel p-6 grid gap-4 sm:grid-cols-2"><h3 className="font-bold sm:col-span-2">{editing === 'new' ? 'Add account' : 'Edit account'}</h3><label className="field-label">Account email<input className="operator-input" type="email" value={form.email} maxLength={254} onChange={e=>setForm({...form,email:e.target.value})} required/></label><label className="field-label">Display name<input className="operator-input" value={form.label} maxLength={80} onChange={e=>setForm({...form,label:e.target.value})} required/></label><label className="field-label sm:col-span-2">Organization (optional)<input className="operator-input" value={form.organization} maxLength={100} onChange={e=>setForm({...form,organization:e.target.value})}/></label><div className="flex gap-3 sm:col-span-2"><BrandButton type="submit" disabled={busy}>{busy?'Saving…':'Save account'}</BrandButton><BrandButton variant="outline" onClick={()=>setEditing(null)} disabled={busy}>Cancel</BrandButton></div></form>}
+    {error && <p role="alert" className="operator-panel p-4 text-sm">{error}</p>}
+    <section className="operator-panel"><h3 className="p-5 font-semibold border-b">{accounts.length} account{accounts.length === 1 ? '' : 's'} listed</h3>{!accounts.length ? <p className="p-6 text-sm text-muted-foreground">No accounts yet. Add the first one above.</p> : <ul className="divide-y">{accounts.map(account=><li key={account.id} className="flex flex-wrap items-center gap-3 p-5"><div className="min-w-0 flex-1"><p className="font-semibold text-sm">{account.label}</p><p className="text-xs text-muted-foreground break-all">{account.email}{account.organization ? ` · ${account.organization}` : ''}</p></div><span className="neutral-pill">{account.active ? 'Listed · not connected' : 'Archived'}</span><button className="brand-link underline" onClick={()=>start(account)}>Edit</button><button className="brand-link underline" disabled={busy} onClick={()=>toggle(account)}>{account.active?'Archive':'Restore'}</button></li>)}</ul>}</section>
+  </div>;
+}
