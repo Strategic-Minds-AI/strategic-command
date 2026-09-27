@@ -10,9 +10,10 @@ import SourceExplorer from '@/components/operator/SourceExplorer';
 import SystemsPanel from '@/components/operator/SystemsPanel';
 import McpPanel from '@/components/operator/McpPanel';
 import WhatsAppPanel from '@/components/whatsapp/WhatsAppPanel';
+import AuditPanel from '@/components/operator/AuditPanel';
 import TaskForm from '@/components/operator/TaskForm';
 import useOperatorData from '@/components/operator/useOperatorData';
-const pages={overview:['Mission control','Your agents, tools, and tasks. One place to take control.'],tasks:['Task queue','Define the goal. Keep every instruction in view.'],schedules:['Run on your schedule','Turn repeatable work into a consistent routine.'],systems:['Connected systems','Know what’s connected. Know what’s in your control.'],sources:['Your source. Unpacked.','Explore the two systems powering your next build.'],mcp:['Agent access, on your terms.','Connect compatible AI clients through Model Context Protocol.'],whatsapp:['WhatsApp operator','Manage tasks and request approved computer actions through chat.']};
+const pages={overview:['Mission control','Your agents, tools, and tasks. One place to take control.'],tasks:['Task queue','Define the goal. Keep every instruction in view.'],schedules:['Run on your schedule','Turn repeatable work into a consistent routine.'],systems:['Connected systems','Know what’s connected. Know what’s in your control.'],sources:['Your source. Unpacked.','Explore the two systems powering your next build.'],mcp:['Agent access, on your terms.','Connect compatible AI clients through Model Context Protocol.'],whatsapp:['WhatsApp operator','Manage tasks and request approved computer actions through chat.'],audit:['Operator audit','Scheduled health checks, safe recovery, and findings to review.']};
 export default function Home() {
   const [params,setParams]=useSearchParams(), [form,setForm]=useState(null), data=useOperatorData();
   const view=pages[params.get('view')]?params.get('view'):'overview';
@@ -30,6 +31,7 @@ export default function Home() {
     {view==='systems'&&<SystemsPanel onSources={sources} data={data}/>}
     {view==='sources'&&<SourceExplorer key={params.get('package')||'all'} initialPackage={params.get('package')}/>}
     {view==='mcp'&&<McpPanel/>}
+    {view==='audit'&&<AuditPanel/>}
     {view==='whatsapp'&&<WhatsAppPanel user={data.user}/>}
     <TaskForm key={form||'closed'} open={!!form} schedule={form==='schedule'} onClose={()=>setForm(null)} onSaved={data.refresh}/>
   </OperatorShell>;

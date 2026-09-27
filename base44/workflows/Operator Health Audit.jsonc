@@ -1,0 +1,47 @@
+{
+  "name": "Operator Health Audit",
+  "trigger": {
+    "condition": null,
+    "config": {
+      "trigger_type": "scheduled",
+      "events": [],
+      "schedule_mode": "recurring",
+      "cron_expression": "*/15 * * * *",
+      "one_time_date": null,
+      "timezone": "UTC",
+      "interval_value": null,
+      "interval_unit": null,
+      "interval_anchor": null,
+      "ends_type": "never",
+      "ends_on_date": null,
+      "ends_after_count": null
+    }
+  },
+  "description": "Every 15 minutes inspect recent operator activity and safely close expired, unstarted computer commands.",
+  "definition": {
+    "document": {
+      "dsl": "1.0.0",
+      "name": "operator_health_audit",
+      "version": "1.0",
+      "namespace": "base44"
+    },
+    "do": [
+      {
+        "run_audit": {
+          "call": "invoke_backend_function",
+          "with": {
+            "function_name": "auditOperator",
+            "args": {
+              "source": "scheduled"
+            }
+          },
+          "then": "end",
+          "x-base44": {
+            "title": "Audit operator health",
+            "description": "Check activity and close expired queued commands"
+          }
+        }
+      }
+    ]
+  }
+}

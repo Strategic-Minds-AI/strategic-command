@@ -1,0 +1,90 @@
+{
+  "name": "OperatorAudit",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "attention"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "maxLength": 240
+    },
+    "findings": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "info",
+              "warning"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "recommendation": {
+            "type": "string",
+            "maxLength": 300
+          }
+        },
+        "required": [
+          "code",
+          "severity",
+          "message",
+          "recommendation"
+        ]
+      }
+    },
+    "healed_count": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "source": {
+      "type": "string",
+      "enum": [
+        "manual",
+        "scheduled"
+      ]
+    }
+  },
+  "required": [
+    "status",
+    "summary",
+    "findings",
+    "healed_count",
+    "source"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}
