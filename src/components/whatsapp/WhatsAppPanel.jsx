@@ -1,0 +1,12 @@
+import React from 'react';
+import { ArrowRight, ShieldCheck } from 'lucide-react';
+import { base44 } from '@/api/base44Client';
+import OperatorChat from '@/components/whatsapp/OperatorChat';
+import { operatorAgent } from '@/components/whatsapp/useOperatorChat';
+export default function WhatsAppPanel({ user }) {
+  return <div className="space-y-6">
+    <section className="operator-panel p-6 sm:p-8"><div className="flex flex-wrap justify-between items-start gap-4"><div><span className="brand-pill">Private operator</span><h2 className="font-bold text-2xl mt-4">Bring your operator to WhatsApp</h2><p className="text-sm text-muted-foreground mt-3 max-w-2xl">Connect your administrator account, send the first message, and talk to the operator about your tasks and paired computers.</p></div><a className="brand-primary !rounded-xl" href={base44.agents.getWhatsAppConnectURL(operatorAgent)} target="_blank" rel="noopener noreferrer">Connect WhatsApp<ArrowRight/></a></div><ol className="list-decimal pl-5 space-y-2 text-sm text-muted-foreground mt-6"><li>Open the connection link and complete the account-linking steps.</li><li>Send the agent your first WhatsApp message to start the conversation.</li><li>Keep your desktop companion running for computer actions; approve the agent’s requested tools first.</li></ol><p className="mt-5 text-xs text-muted-foreground flex items-start gap-2"><ShieldCheck className="h-4 w-4 shrink-0"/>This uses an agent-assigned WhatsApp number, not your business number. Opening the link does not by itself confirm a connection. Computer actions remain restricted to administrators and their paired devices.</p></section>
+    <OperatorChat userId={user.id}/>
+    <section className="operator-panel p-6"><h2 className="font-bold text-lg">Business inbox & automatic alerts</h2><p className="text-sm text-muted-foreground mt-2">Not connected yet. Customer messaging from your own business number and proactive task alerts need a separate WhatsApp Business integration, verified sender setup, recipient consent, and approved notification templates where required.</p><p className="text-sm text-muted-foreground mt-3">Customer conversations must stay separate from this private operator so customers never receive computer-control permissions or access to your task queue. No customer replies or automatic WhatsApp alerts are enabled by this connection.</p></section>
+  </div>;
+}
