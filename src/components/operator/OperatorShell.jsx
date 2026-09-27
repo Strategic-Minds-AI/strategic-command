@@ -16,7 +16,7 @@ export default function OperatorShell({ view, onNavigate, user, children }) {
         <div className="flex items-center gap-2"><span className="hidden sm:inline-flex neutral-pill"><ShieldCheck className="h-3 w-3"/>Admin access</span><button type="button" className="rounded-lg p-2 hover:bg-accent" aria-label={theme==='dark'?'Switch to light mode':'Switch to dark mode'} onClick={()=>setTheme(theme==='dark'?'light':'dark')}>{theme==='dark'?<Sun className="h-5 w-5"/>:<Moon className="h-5 w-5"/>}</button><button type="button" className="brand-outline !py-2 !px-3" aria-label={chatOpen?'Close copilot':'Open copilot'} aria-expanded={chatOpen} onClick={()=>setChatOpen(!chatOpen)}><MessageSquare className="h-4 w-4"/><span className="hidden sm:inline">Copilot</span></button></div>
       </header>
       <main className="max-w-[1536px] mx-auto p-4 sm:p-7 lg:p-9">{children}</main>
-      <footer className="px-4 sm:px-7 py-6 border-t border-border text-xs text-muted-foreground">Xtreme Agent Command · Secure pairing · Desktop companion</footer>
+      <footer className="px-4 sm:px-7 py-6 border-t border-border text-xs text-muted-foreground">Strategic · Secure pairing · Desktop companion</footer>
     </div>
     <CopilotDrawer open={chatOpen} onClose={()=>setChatOpen(false)} userId={user?.id}/>
   </div>;
